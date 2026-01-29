@@ -1,0 +1,70 @@
+version: "3.8"
+
+networks:
+  ies_net:
+    driver: bridge
+
+services:
+  dns:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: dns
+    volumes:
+      - ./dns:/etc/bind
+    networks:
+      ies_net:
+        ipv4_address: 192.168.200.2
+
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: ldap
+    environment:
+      LDAP_ORGANISATION: "IES Luis Vives"
+      LDAP_DOMAIN: "iesluisvives.org"
+      LDAP_ADMIN_PASSWORD: admin
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+    networks:
+      ies_net:
+        ipv4_address: 192.168.200.50
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: ldap
+    ports:
+      - "8080:80"
+    networks:
+      ies_net:
+
+  backend-daw:
+    image: nginx:alpine
+    volumes:
+      - ./backend-daw:/usr/share/nginx/html
+    networks:
+      ies_net:
+
+  backend-dam:
+    image: httpd:2.4
+    volumes:
+      - ./backend-dam:/usr/local/apache2/htdocs
+      - ./backend-dam/.htaccess:/usr/local/apache2/htdocs/calificaciones/.htaccess
+    networks:
+      ies_net:
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-proxy:/etc/nginx/conf.d
+    depends_on:
+      - backend-daw
+      - backend-dam
+    networks:
+      ies_net:
+        ipv4_address: 192.168.200.10
+
+volumes:
+  ldap_data:
+  ldap_config:
