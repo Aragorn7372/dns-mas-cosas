@@ -1,0 +1,9 @@
+AuthName "Acceso Restringido - Alumnos DAM"
+AuthType Basic
+AuthBasicProvider ldap
+
+AuthLDAPURL "ldap://192.168.200.3:389/ou=users,dc=iesluisvives,dc=org?uid?sub?(objectClass=*)"
+AuthLDAPBindDN "cn=admin,dc=iesluisvives,dc=org"
+AuthLDAPBindPassword "admin"
+
+Require valid-user

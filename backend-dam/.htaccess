@@ -1,7 +1,0 @@
-AuthType Basic
-AuthName "Zona protegida DAM"
-AuthBasicProvider ldap
-AuthLDAPURL "ldap://ldap/dc=iesluisvives,dc=org?uid"
-AuthLDAPBindDN "cn=admin,dc=iesluisvives,dc=org"
-AuthLDAPBindPassword admin
-Require valid-user

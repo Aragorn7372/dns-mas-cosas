@@ -1,70 +1,85 @@
-version: "3.8"
-
-networks:
-  ies_net:
-    driver: bridge
-
 services:
   dns:
-    image: internetsystemsconsortium/bind9:9.18
-    container_name: dns
+    image: ubuntu/bind9:latest
+    container_name: dns-server
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
     volumes:
-      - ./dns:/etc/bind
+      - ./dns/named.conf.local:/etc/bind/named.conf.local:ro
+      - ./dns/db.iesluisvives.org:/etc/bind/zones/db.iesluisvives.org:ro
+      - ./dns/db.192.168.200:/etc/bind/zones/db.192.168.200:ro
     networks:
-      ies_net:
+      vives-net:
         ipv4_address: 192.168.200.2
 
   ldap:
     image: osixia/openldap:1.5.0
-    container_name: ldap
+    container_name: ldap-server
     environment:
-      LDAP_ORGANISATION: "IES Luis Vives"
-      LDAP_DOMAIN: "iesluisvives.org"
-      LDAP_ADMIN_PASSWORD: admin
-    volumes:
-      - ldap_data:/var/lib/ldap
-      - ldap_config:/etc/ldap/slapd.d
+      - LDAP_DOMAIN=iesluisvives.org
+      - LDAP_ADMIN_PASSWORD=admin
     networks:
-      ies_net:
-        ipv4_address: 192.168.200.50
-
-  phpldapadmin:
-    image: osixia/phpldapadmin:0.9.0
-    environment:
-      PHPLDAPADMIN_LDAP_HOSTS: ldap
+      vives-net:
+        ipv4_address: 192.168.200.3
     ports:
-      - "8080:80"
-    networks:
-      ies_net:
+      - "389:389"
+    dns:
+      - 192.168.200.2
+    depends_on:
+      - dns
 
   backend-daw:
     image: nginx:alpine
+    container_name: server_daw
     volumes:
-      - ./backend-daw:/usr/share/nginx/html
+      - ./backend-daw:/usr/share/nginx/html:ro
     networks:
-      ies_net:
+      vives-net:
+        ipv4_address: 192.168.200.20
+    dns:
+      - 192.168.200.2
+    depends_on:
+      - dns
 
   backend-dam:
     image: httpd:2.4
+    container_name: server_dam
     volumes:
-      - ./backend-dam:/usr/local/apache2/htdocs
-      - ./backend-dam/.htaccess:/usr/local/apache2/htdocs/calificaciones/.htaccess
+      - ./backend-dam/index.html:/usr/local/apache2/htdocs/index.html
+      - ./backend-dam/calificaciones/index.html:/usr/local/apache2/htdocs/calificaciones/index.html
+      - ./backend-dam/calificaciones/.htaccess:/usr/local/apache2/htdocs/calificaciones/.htaccess
     networks:
-      ies_net:
+      vives-net:
+        ipv4_address: 192.168.200.30
+    dns:
+      - 192.168.200.2
+    depends_on:
+      - dns
+      - ldap
 
   proxy:
-    image: nginx:alpine
-    ports:
-      - "80:80"
+    image: bitnami/nginx:latest 
+    container_name: proxy_main
     volumes:
-      - ./nginx-proxy:/etc/nginx/conf.d
+      - ./nginx-proxy/default.conf:/opt/bitnami/nginx/conf/server_blocks/my_server_block.conf:ro
+      - ./nginx-proxy/.htpasswd:/opt/bitnami/nginx/conf/.htpasswd:ro
+    ports:
+      - "80:8080"
     depends_on:
       - backend-daw
       - backend-dam
+      - ldap
+      - dns
     networks:
-      ies_net:
+      vives-net:
         ipv4_address: 192.168.200.10
+    dns:
+      - 192.168.200.2
 
-volumes:
-  ldap_data:
-  ldap_config:
+networks:
+  vives-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.200.0/24
