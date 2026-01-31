@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dawazon: Proyecto de Infraestructura: dns-mas-cosas</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Dawazon<span id="projectnumber">&#160;0.1</span>
+   </div>
+   <div id="projectbrief">Tienda bien bacana</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Cargando...</div>
+<div class="SRStatus" id="Searching">Buscando...</div>
+<div class="SRStatus" id="NoMatches">Nada coincide</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Proyecto de Infraestructura: dns-mas-cosas </div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="md__2home_2runner_2work_2dns-mas-cosas_2dns-mas-cosas_2README"></a> Este proyecto despliega una infraestructura de red orquestada por Docker que incluye servicios de DNS, LDAP, Proxy Inverso y servidores web (Apache y Nginx). Está diseñado para simular un entorno educativo o empresarial bajo el dominio <code>iesluisvives.org</code>.</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Estructura del Proyecto</h1>
+<div class="fragment"><div class="line">📂 dns-mas-cosas</div>
+<div class="line">├── 📄 docker-compose.yml</div>
+<div class="line">├── 📄 README.md</div>
+<div class="line">├── 📂 backend-dam/</div>
+<div class="line">│   ├── 📄 index.html</div>
+<div class="line">│   └── 📂 calificaciones/</div>
+<div class="line">│       ├── 📄 .htaccess</div>
+<div class="line">│       └── 📄 index.html</div>
+<div class="line">├── 📂 backend-daw/</div>
+<div class="line">│   ├── 📄 index.html</div>
+<div class="line">│   └── 📂 calificaciones/</div>
+<div class="line">│       └── 📄 index.html</div>
+<div class="line">├── 📂 dns/</div>
+<div class="line">│   ├── 📄 db.192.168.200</div>
+<div class="line">│   ├── 📄 db.iesluisvives.org</div>
+<div class="line">│   └── 📄 named.conf.local</div>
+<div class="line">├── 📂 ldap/</div>
+<div class="line">│   └── 📄 users.ldif</div>
+<div class="line">└── 📂 nginx-proxy/</div>
+<div class="line">    ├── 📄 .htpasswd</div>
+<div class="line">    └── 📄 default.conf</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<b>Nota</b>: Los iconos 📂 representan carpetas y 📄 representan archivos de configuración o contenido. </p>
+</blockquote>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Arquitecura de Red</h1>
+<p>El proyecto utiliza una red interna bridge llamada <code>vives-net</code> con la subred <code>192.168.200.0/24</code>.</p>
+<div class="fragment"><div class="line">graph TD</div>
+<div class="line">    Client[Cliente Externo] --&gt;|Puerto 80| Proxy(Proxy Nginx: 192.168.200.10)</div>
+<div class="line">    Proxy --&gt;|/daw| DAW(Server DAW Nginx: 192.168.200.20)</div>
+<div class="line">    Proxy --&gt;|/dam| DAM(Server DAM Apache: 192.168.200.30)</div>
+<div class="line">    DAM --&gt;|Auth LDAP| LDAP(OpenLDAP: 192.168.200.3)</div>
+<div class="line">    DAW -.-&gt; DNS(Bind9 DNS: 192.168.200.2)</div>
+<div class="line">    DAM -.-&gt; DNS</div>
+<div class="line">    Proxy -.-&gt; DNS</div>
+<div class="line">    LDAP -.-&gt; DNS</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+Servicios Comprendidos</h1>
+<h2><a class="anchor" id="autotoc_md4"></a>
+1. DNS Server (&lt;tt&gt;dns-server&lt;/tt&gt;)</h2>
+<ul>
+<li><b>Imagen</b>: <code>ubuntu/bind9:latest</code></li>
+<li><b>IP</b>: <code>192.168.200.2</code></li>
+<li><b>Función</b>: Servidor DNS autoritativo para <code>iesluisvives.org</code>. Gestiona la resolución directa e inversa.</li>
+<li><b>Configuración</b>: Localizada en <a href="file:///c:/Users/Aragorn/Desktop/dns-mas-cosas/dns/">dns/</a>.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md5"></a>
+2. Directorio LDAP (&lt;tt&gt;ldap-server&lt;/tt&gt;)</h2>
+<ul>
+<li><b>Imagen</b>: <code>osixia/openldap:1.5.0</code></li>
+<li><b>IP</b>: <code>192.168.200.3</code></li>
+<li><b>Dominio</b>: <code>iesluisvives.org</code></li>
+<li><b>Función</b>: Proporciona servicios de autenticación centralizada para el backend DAM.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md6"></a>
+3. Backend DAW (&lt;tt&gt;server_daw&lt;/tt&gt;)</h2>
+<ul>
+<li><b>Imagen</b>: <code>nginx:alpine</code></li>
+<li><b>IP</b>: <code>192.168.200.20</code></li>
+<li><b>Contenido</b>: <a href="file:///c:/Users/Aragorn/Desktop/dns-mas-cosas/backend-daw/">backend-daw/</a>.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md7"></a>
+4. Backend DAM (&lt;tt&gt;server_dam&lt;/tt&gt;)</h2>
+<ul>
+<li><b>Imagen</b>: <code>httpd:2.4</code> (Apache)</li>
+<li><b>IP</b>: <code>192.168.200.30</code></li>
+<li><b>Contenido</b>: <a href="file:///c:/Users/Aragorn/Desktop/dns-mas-cosas/backend-dam/">backend-dam/</a>.</li>
+<li><b>Seguridad</b>: Utiliza un archivo <code>.htaccess</code> para autenticar a los alumnos contra el servidor LDAP en la ruta <code>/calificaciones</code>.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md8"></a>
+5. Proxy Inverso (&lt;tt&gt;proxy_main&lt;/tt&gt;)</h2>
+<ul>
+<li><b>Imagen</b>: <code>bitnami/nginx:latest</code></li>
+<li><b>IP</b>: <code>192.168.200.10</code></li>
+<li><b>Puertos</b>: Mapea el tráfico del puerto <code>80</code> (host) al <code>8080</code> (contenedor).</li>
+<li><b>Rutas</b>:<ul>
+<li><code>/daw</code>: Redirige al servidor DAW.</li>
+<li><code>/dam</code>: Redirige al servidor DAM.</li>
+</ul>
+</li>
+<li><b>Seguridad</b>: Implementa <code>auth_basic</code> en las rutas <code>/daw/calificaciones/</code> y <code>/dam/calificaciones/</code> usando un archivo <code>.htpasswd</code>.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md9"></a>
+Instrucciones de Despliegue</h1>
+<p>Para levantar toda la infraestructura, ejecuta:</p>
+<div class="fragment"><div class="line">docker-compose up -d</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
+Seguridad y Acceso</h1>
+<ul>
+<li><b>Zonas Restringidas</b>: Tanto en DAW como en DAM, el acceso a las calificaciones está protegido.</li>
+<li><b>Credenciales</b>:<ul>
+<li>LDAP Admin Password: <code>admin</code> (Configurado en <code>docker-compose.yml</code>).</li>
+<li>Nginx Auth: Configurado en <a href="file:///c:/Users/Aragorn/Desktop/dns-mas-cosas/nginx-proxy/.htpasswd">nginx-proxy/.htpasswd</a>.</li>
+</ul>
+</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md11"></a>
+👤 Autor</h1>
+<div align="center"> <img src="https://github.com/Aragorn7372.png" alt="Aragorn Profile" width="150px" style="border-radius: 50%;" class="inline"/> <br  />
+ <h3><a href="https://github.com/Aragorn7372">Aragorn</a></h3>
+</div><div align="center"> </div><div align="center">Creador de la Infraestructura <code>iesluisvives.org</code></div><div align="center"> </div> </div></div><!-- PageDoc -->
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado por&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+</small></address>
+</body>
+</html>
